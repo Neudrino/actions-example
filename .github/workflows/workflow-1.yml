@@ -1,0 +1,13 @@
+on:
+  - workflow_dispatch
+  - workflow_call
+
+jobs:
+  job-A:
+    runs-on: ubuntu-latest
+    steps:
+      - run: "false"
+  job-B:
+    runs-on: ubuntu-latest
+    steps:
+      - run: "true"
