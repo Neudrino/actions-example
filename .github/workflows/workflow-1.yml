@@ -3,10 +3,44 @@ on:
   - workflow_call
 
 jobs:
-  job-A:
+
+  job-A-worker:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - "true"
+          - "true"
+          - "false"
     steps:
-      - run: "false"
+      - run: ${{ matrix.command }}
+
+  job-A-collector:
+    runs-on: ubuntu-latest
+    needs: job-A-worker
+    if: success()
+    outputs:
+      success: ${{ steps.setOutput.outputs.success }}
+    steps:
+      - id: setOutput
+        run: echo "success=true" >> $GITHUB_OUTPUT
+
+  job-A-reporter:
+    runs-on: ubuntu-latest
+    needs: [job-A-worker, job-A-collector]
+    if: always()
+    steps:
+      - run: |
+          worker_success="${{ needs.collector.outputs.success }}"
+          if [[ $worker_success == "true" ]]; then
+            echo "Workflow passed"
+            exit 0
+          else
+            echo "Workflow failed"
+            exit 1
+          fi
+
   job-B:
     runs-on: ubuntu-latest
     steps:

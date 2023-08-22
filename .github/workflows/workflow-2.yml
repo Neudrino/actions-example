@@ -3,7 +3,7 @@ on: push
 jobs:
   refer-to-1:
     uses: ./.github/workflows/workflow-1.yml
-  job-B:
+  job-probe:
     runs-on: ubuntu-latest
     needs: refer-to-1
     if: ${{ !failure() }}
