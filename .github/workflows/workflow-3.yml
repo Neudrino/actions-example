@@ -1,0 +1,15 @@
+on: push
+
+jobs:
+  job-green:
+    runs-on: ubuntu-latest
+    steps:
+      - run: "true"
+  refer-to-2:
+    needs: job-green
+    uses: ./.github/workflows/workflow-2.yml
+  job-probe:
+    runs-on: ubuntu-latest
+    needs: refer-to-2
+    steps:
+      - run: echo "Hello!"
